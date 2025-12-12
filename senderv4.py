@@ -125,7 +125,6 @@ def send_data_packet(current_lat, current_lon, current_phase):
     sock_main.sendto(packet, (MULTICAST_GROUP, MULTICAST_PORT))
 
 print("--- ASXi Flight Simulator (ORD to JFK) ---")
-print("Goal: Simulate a full flight with correct heading.")
 print("------------------------------------------")
 
 start_time = time.time()
