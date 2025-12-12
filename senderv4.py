@@ -124,7 +124,7 @@ def send_data_packet(current_lat, current_lon, current_phase):
     packet = struct.pack(DATA_FULL_FORMAT, *full_data)
     sock_main.sendto(packet, (MULTICAST_GROUP, MULTICAST_PORT))
 
-print("--- ASXi Flight Simulator (ORD to JFK) ---")
+print("--- Flight Simulator (ORD to JFK) ---")
 print("------------------------------------------")
 
 start_time = time.time()
