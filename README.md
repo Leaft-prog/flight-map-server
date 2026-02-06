@@ -11,7 +11,19 @@ that platform discovery has failed and  flight data isn't available (despite it 
 
 Some code was made by ai (most of these parts are just formulas and calculations as I don't have any knowledge in aviation lmao and some weird logic).
 
-This program is made purely for fun and research purpose, please don't sue me.
+Legal Notice
+
+This project is for educational and research purposes only.
+
+    Source: Protocol reverse-engineered from publicly available Airshow app for android
+    Method: Static bytecode analysis (no DRM/encryption circumvented)
+    Implementation: Independent Python implementation
+    Compliance: EU Directive 2009/24/EC, Article 6 (Interoperability)
+    Not Affiliated: Independent project, not affiliated with Collins Aerospace
+
+Disclaimer
+
+This software is provided AS-IS without warranty. Users are responsible for compliance with all applicable laws and terms of service.
 
 Images:
 <img width="1881" height="1116" alt="asxiscr4" src="https://github.com/user-attachments/assets/6a89d88a-2089-48f4-b5c2-331e2babc96f" />
