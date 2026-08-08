@@ -56,7 +56,7 @@ sim.start()
 sender.start()
 plat.start()
 while True:
-	print(f"\033[{11};0H", end="")
+	print(f"\033[{12};0H", end="")
 	print("\033[J", end="")
 	
 	print(f"Elapsed time: {sim.get_Elapsed()}") 
