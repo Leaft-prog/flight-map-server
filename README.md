@@ -1,10 +1,10 @@
 This program simulates flight data compatible with ASXi mobile.
-It simulates an accelerated 10 minutes flight and all destinations are included.
+It simulates a flight with the desired destinations.
 
 how to use:
 
-python3 senderv7.py [departure iata code]
-[destination iata code]
+python3 main.py [departure iata code]
+[destination iata code] [simulation seconds)
 
 Some code was made by ai (most of these parts are just formulas and calculations as I don't have any knowledge in aviation lmao and some weird logic).
 
