@@ -1,25 +1,16 @@
 This program simulates flight data compatible with ASXi mobile.
-It simulates an accelerated 10 minutes flight and all destinations are included.
+It simulates a flight with the desired destinations.
 
 how to use:
 
-python3 senderv7.py [departure iata code]
-[destination iata code]
-
-For now there are bugs and still platform (a system used to control ASXi) isn't implemented yet, just flight data, so you get an error
-that platform discovery has failed and  flight data isn't available (despite it actually is) but the moving map is shown as it should.
+python3 main.py [departure iata code]
+[destination iata code] [simulation seconds)
 
 Some code was made by ai (most of these parts are just formulas and calculations as I don't have any knowledge in aviation lmao and some weird logic).
 
 Legal Notice
 
-This project is for educational and research purposes only.
-
-    Source: Protocol reverse-engineered from publicly available Airshow app for android
-    Method: Static bytecode analysis (no DRM/encryption circumvented)
-    Implementation: Independent Python implementation
-    Compliance: EU Directive 2009/24/EC, Article 6 (Interoperability)
-    Not Affiliated: Independent project, not affiliated with Collins Aerospace
+This project is for educational and research purposes only made only for interoperability.
 
 Disclaimer
 
