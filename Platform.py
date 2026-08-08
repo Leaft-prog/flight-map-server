@@ -7,6 +7,7 @@ import threading
 class Platform(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
+		self.REFRESH_RATE=1
 		self.MULTICAST_IP = "239.1.40.1"
 		self.PORT = 50061 
 		self.MAGIC_DATAGRAM_ID = 0xDECE  # 0xdece
@@ -17,6 +18,7 @@ class Platform(threading.Thread):
 					<asxi_config>
 						<symbols aircraft_type="Boeing 777"/>
 					</asxi_config>
+					<config url="http://192.168.1.50/config" version="2.1.0"/>
 					</root>"""
 
 	def create_discovery_packet(self, platform_version: int, service_name: str) -> bytes:
@@ -52,7 +54,7 @@ class Platform(threading.Thread):
 
 		while True:
 			sock.sendto(packet_data, (self.MULTICAST_IP, self.PORT))
-			time.sleep(2)
+			time.sleep(self.REFRESH_RATE)
 
 	def get_ip(self):
 		return self.MULTICAST_IP

@@ -42,7 +42,8 @@ class Simulator(threading.Thread):
 		self.current_phase = 1
 		self.end_of_flight=0
 		self.elapsed = 0
-		
+		self.flightnumber=b'PTA00' 
+		self.flightnumber_len = len(self.flightnumber)
 		self.altitude_scaled=self.INVALDATA
 		self.altitude=self.INVALDATA
 		self.ground_speed=self.INVALDATA
@@ -349,6 +350,11 @@ class Simulator(threading.Thread):
 
 	def get_Mach(self):
 		return self.mach
+		
+	def get_flightnumber(self):
+		return self.flightnumber
+	def get_flightnumber_len(self):
+		return self.flightnumber_len
 
 	def get_Heading(self):
 		return self.heading
@@ -405,15 +411,16 @@ class Simulator(threading.Thread):
 			int(self.dst_GEOID),						                                    # 30. DST NAME/CITY ID
 			self.current_phase,                                                                      # 31. Phase
 			self.acars_phase_id,                                                             # 32. Acars Phase ID
-			self.miqat_phase,                                                                # 33. Miqat phase (1:Disabled 2:Working 3:Countdown 4:Welcome)
-			0,                                                                          # 34. weird pitch and roll values combined (not using, using 40/41 instead)
-			self.end_of_flight,                                                              			# 35. end of flight flag (DONT TOUCH it breaks the program when greater than 0 and causes crash)
-			1,                                                                          # 36. ? (MUST BE GREATER THAN 0 OTHERWISE CRASH)
-			self.profile_mode,                                                               # 37. Profile mode
-			int(self.altitude_scaled),                                                            # 38. unscaled altitude
-			int(self.vertical_speed),                                                             # 39. vertical speed (unscaled)
-			int(self.pitch),                                                                   	# 40. pitch (dynamic)
-			int(self.roll),																		# 41. roll (dynamic)
+			self.miqat_phase, 																# 33. Miqat phase (1:Disabled 2:Working 3:Countdown 4:Welcome)
+			self.flightnumber_len,																#34. flight number length
+			self.flightnumber,  															#35 flight number
+			0,                                                             					  # 36. weird pitch and roll values combined (not using, using 40/41 instead)                                                                 
+			self.end_of_flight,                                                              	# 37. end of flight flag (DONT TOUCH it breaks the program when greater than 0 and causes crash)                                                            
+			self.profile_mode,                                                               # 38. Profile mode
+			int(self.altitude_scaled),                                                            # 39. unscaled altitude
+			int(self.vertical_speed),                                                             # 40. vertical speed (unscaled)
+			int(self.pitch),                                                                   	# 41. pitch (dynamic)
+			int(self.roll),																		# 42. roll (dynamic)													
 			]
 
 			return packet

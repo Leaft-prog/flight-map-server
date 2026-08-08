@@ -11,13 +11,14 @@ class Udp_Sender(threading.Thread):
 		threading.Thread.__init__(self)
 		self.MULTICAST_GROUP ='224.0.0.1'
 		self.MULTICAST_PORT = 50066
-		self.REFRESH_RATE = 0.1
+		self.REFRESH_RATE = 1
 		self.INVALDATA = 0x7FFFFFFF
 		self.MAGIC_ID = 0xFDFD
 		self.DATA_PACKET_TYPE = 0x10
 		self.fd=fd
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.DATA_FULL_FORMAT = '>HH' + ('i' * 20)+ 'I'+ ('i'*21)
+		# Udp_Sender
+		self.DATA_FULL_FORMAT ='>HH' + ('i'*32) + 'iii' + '5s' + ('i'*7)
 		self.EXPECTED_PACKET_SIZE = struct.calcsize(self.DATA_FULL_FORMAT)
     
 	def run(self): 
