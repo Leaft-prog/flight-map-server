@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ticker_ads max_ads="1">
+    <ticker_ad duration="15" 
+               period="1" 
+               start_date="01/01/2020"
+			   end_date="01/01/2099"
+               filename="advert.png" 
+               resolution="721x87" />
+</ticker_ads>

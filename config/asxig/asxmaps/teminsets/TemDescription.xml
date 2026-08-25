@@ -1,0 +1,53 @@
+<tem_map_package name="temlandsat7" quality="80">
+	<tem res="480" w="81052" h="40526" tile_w="512" tile_h="512" excludenorth_deg="5.0" excludesouth_deg="10.0">
+	</tem>
+	<tem res="960" w="40526" h="20263" tile_w="512" tile_h="512">
+	</tem>
+	<tem res="1920" w="20263" h="10132" tile_w="512" tile_h="512">
+	</tem>
+	<tem res="3840" w="10132" h="5066" tile_w="512" tile_h="512">
+	</tem>
+	<tem res="7680" w="5066" h="2533" tile_w="512" tile_h="512">
+	</tem>
+	<tem res="15360" w="2533" h="1266" tile_w="512" tile_h="512">
+	</tem>
+
+	<world_maps>
+		<world res="25002" 	w="1600" h="800" type="jpg">World_1600x800</world>
+		<world res="25002"	w="1600" h="800" type="jpg">World_1600x800_idl</world>
+		<world res="33336" 	w="1200" h="600" type="jpg">World_1200x600</world>
+		<world res="33336" 	w="1200" h="600" type="jpg">World_1200x600_idl</world>
+		<world res="41670" 	w="960" h="480" type="jpg">World_960x480</world>
+		<world res="41670" 	w="960" h="480" type="jpg">World_960x480_idl</world>
+		<world res="55560" 	w="720" h="360" type="jpg">World_720x360</world>
+		<world res="55560" 	w="720" h="360" type="jpg">World_720x360_idl</world>
+		<world res="92600" w="432" h="216" type="jpg">World_432x216</world>
+		<world res="92600" w="432" h="216" type="jpg">World_432x216_idl</world>
+
+
+		<night res="25002" 	w="1600" h="800" type="jpg">NightMapWorld_1600x800</night>
+		<night res="25002"	w="1600" h="800" type="jpg">NightMapWorld_1600x800_idl</night>
+	    <night res="33336" w="1200" h="600" type="jpg">NightMapWorld_1200x600</night>
+	    <night res="33336" w="1200" h="600" type="jpg">NightMapWorld_1200x600_idl</night>
+	    <night res="41670" w="960" h="480" type="jpg">NightMapWorld_960x480</night>
+	    <night res="41670" w="960" h="480" type="jpg">NightMapWorld_960x480_idl</night>
+	    <night res="55560" w="720" h="360" type="jpg">NightMapWorld_720x360</night>
+	    <night res="55560" w="720" h="360" type="jpg">NightMapWorld_720x360_idl</night>
+	    <night res="92600" w="432" h="216" type="jpg">NightMapWorld_432x216</night>
+	    <night res="92600" w="432" h="216" type="jpg">NightMapWorld_432x216_idl</night>
+
+
+	    <timezone res="25002" w="1600" h="800" type="jpg">TimeZoneMap_1600x800</timezone>
+	    <timezone res="25002" w="1600" h="800" type="jpg">TimeZoneMap_1600x800_idl</timezone>
+	    <timezone res="33336" w="1200" h="600" type="jpg">TimeZoneMap_1200x600</timezone>
+	    <timezone res="33336" w="1200" h="600" type="jpg">TimeZoneMap_1200x600_idl</timezone>
+	    <timezone res="41670" w="960" h="480" type="jpg">TimeZoneMap_960x480</timezone>
+	    <timezone res="41670" w="960" h="480" type="jpg">TimeZoneMap_960x480_idl</timezone>
+	    <timezone res="55560" w="720" h="360" type="jpg">TimeZoneMap_720x360</timezone>
+	    <timezone res="55560" w="720" h="360" type="jpg">TimeZoneMap_720x360_idl</timezone>
+	    <timezone res="92600" w="432" h="216" type="jpg">TimeZoneMap_432x216</timezone>
+	    <timezone res="92600" w="432" h="216" type="jpg">TimeZoneMap_432x216_idl</timezone>
+
+
+	</world_maps>
+</tem_map_package>
