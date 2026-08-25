@@ -38,7 +38,7 @@ class Simulator(threading.Thread):
 		}
 		self.acars_phase_id=1
 		self.miqat_phase=1
-		self.profile_mode=1
+		self.profile_mode=2
 		self.current_phase = 1
 		self.end_of_flight=0
 		self.elapsed = 0
@@ -257,23 +257,51 @@ class Simulator(threading.Thread):
 		# Return distance in nautical miles (1 km ≈ 0.539957 nm)
 		return R * c * 0.539957
 		
+	def get_LatLon(self, par):
+		if par == "lat":
+			return int(self.current_lat * self.LAT_LON_SCALE_FACTOR) if self.current_lat != self.INVALDATA else 0
+		elif par == "lon":
+			return int(self.current_lon * self.LAT_LON_SCALE_FACTOR) if self.current_lon != self.INVALDATA else 0
+
 	def get_Altitude(self, scaled):
 		if(scaled==True):
-			return int(self.altitude_scaled)
+			return int(self.altitude_scaled) if self.altitude_scaled != self.INVALDATA else 0
 		else:
-			return int(self.altitude)
-						
-	def get_LatLon(self, par):
-		if(par=="lat"):
-			return int(self.current_lat*self.LAT_LON_SCALE_FACTOR)
-		elif(par=="lon"):
-			return int(self.current_lon*self.LAT_LON_SCALE_FACTOR)
+			return int(self.altitude) if self.altitude != self.INVALDATA else 0
          
 	def get_GroundSpeed(self):
-		return self.ground_speed
+		return int(self.ground_speed) if self.ground_speed != self.INVALDATA else 0
+	
+	def get_dptIATA(self):
+		return int(self.dpt_IATA) if isinstance(self.dpt_IATA, (int, float)) and self.dpt_IATA != self.INVALDATA else 0
+	def get_dstIATA(self):
+		return int(self.dst_IATA) if isinstance(self.dst_IATA, (int, float)) and self.dst_IATA != self.INVALDATA else 0
+		
+	def get_dpt_ICAO(self):
+		return self.dpt_ICAO
+	def get_dst_ICAO(self):
+		return self.dst_ICAO
+	
+	def get_dpt_LAT(self):
+		return self.dpt_LAT
+	
+	def get_dpt_LON(self):
+		return self.dpt_LON
+	
+	def get_dst_LAT(self):
+		return self.dst_LAT
+	
+	def get_dst_LON(self):
+		return self.dst_LON
+		
+	def get_dpt_GEOID(self):
+		return int(self.dpt_GEOID)
+	
+	def get_dst_GEOID(self):
+		return int(self.dst_GEOID)
 
 	def get_Headwind(self):
-		return int(self.head_wind)
+		return int(self.head_wind) if self.head_wind != self.INVALDATA else 0
 
 	def get_Phase(self):
 		return self.current_phase
@@ -303,67 +331,66 @@ class Simulator(threading.Thread):
 			
 
 	def get_RemainingTime(self):
-		return int(self.remaining_time)
+		return int(self.remaining_time) if self.remaining_time != self.INVALDATA else 0
 
 	def get_EstimatedArrivalTime(self):
-		return self.estimated_arrival_time
+		return int(self.estimated_arrival_time) if self.estimated_arrival_time != self.INVALDATA else 0
 
 	def get_VerticalSpeed(self, scaled):
 		if(scaled==False):
-			return self.vertical_speed
+			return int(self.vertical_speed) if self.vertical_speed != self.INVALDATA else 0
 		else:
-			return self.vertical_speed_scaled
+			return int(self.vertical_speed_scaled) if self.vertical_speed_scaled != self.INVALDATA else 0
 
 	def get_Tailwind(self):
-		return self.tailwind
+		return int(self.tailwind) if self.tailwind != self.INVALDATA else 0
 
 	def get_TrueAirspeed(self):
-		return self.true_airspeed
+		return int(self.true_airspeed) if self.true_airspeed != self.INVALDATA else 0
 
 	def get_TotalDist(self):
-		return self.total_dist_nm
+		return int(self.total_dist_nm) if self.total_dist_nm != self.INVALDATA else 0
 
 	def get_DistTraveled(self):
-		return self.dist_traveled*100
+		return int(self.dist_traveled * 100) if self.dist_traveled != self.INVALDATA else 0
 
 	def get_DistanceToDestination(self):
-		return self.distance_to_destination
-
+		return int(self.distance_to_destination) if self.distance_to_destination != self.INVALDATA else 0
 
 	def get_Pitch(self):
-		return self.pitch
+		return int(self.pitch) if self.pitch != self.INVALDATA else 0
 
 	def get_Roll(self):
-		return self.roll
+		return int(self.roll) if self.roll != self.INVALDATA else 0
 
 	def get_Date(self):
-		return int(self.date_enc)
+		return int(self.date_enc) if self.date_enc != self.INVALDATA else 0
 
 	def get_Time(self):
-		return int(self.time_enc)
+		return int(self.time_enc) if self.time_enc != self.INVALDATA else 0
 
 	def get_End_Of_Flight(self):
-		return self.end_of_flight
+		return int(self.end_of_flight)
 
 	def get_Temperature(self):
-		return self.temperature
+		return int(self.temperature) if self.temperature != self.INVALDATA else 0
 
 	def get_Mach(self):
-		return self.mach
+		return int(self.mach) if self.mach != self.INVALDATA else 0
 		
-	def get_flightnumber(self):
+	def get_Flightnumber(self):
 		return self.flightnumber
-	def get_flightnumber_len(self):
+	def get_Flightnumber_Len(self):
 		return self.flightnumber_len
 
 	def get_Heading(self):
-		return self.heading
+		return int(self.heading) if self.heading != self.INVALDATA else 0
 
 	def get_HeadingToDestination(self):
-		return self.heading
+		return int(self.heading) if self.heading != self.INVALDATA else 0
 
 	def get_FPA(self):
-		return self.FPA
+		return int(self.FPA) if self.FPA != self.INVALDATA and self.FPA is not None else 0
 
 	def get_MiqatPhase(self):
 		return self.miqat_phase
@@ -373,6 +400,9 @@ class Simulator(threading.Thread):
 
 	def get_ProfileMode(self):
 		return self.profile_mode
+		
+	def get_TimeSinceDeparture(self):
+		return self.time_since_departure
 
 
 	def get_Packet(self):

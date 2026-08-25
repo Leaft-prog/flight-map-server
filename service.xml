@@ -1,0 +1,7 @@
+<root purchased="true">
+					<flight_data fd_ip="224.0.0.1" fd_port="50066" trk_line_ip="224.0.0.5" trk_line_port="50062"/>
+					<asxi_config>
+						<symbols aircraft_type="eGeneric"/>
+					</asxi_config>
+					<config url="http://0.0.0.0/config" version="2.1.0"/>
+</root>
