@@ -8,18 +8,15 @@ import struct
 from Airport_Loader import *
 
 class Simulator(threading.Thread):
-	def __init__(self, airports, TOTAL_FLIGHT_SECONDS):
+	def __init__(self, airports, realtime, TOTAL_FLIGHT_SECONDS):
 		threading.Thread.__init__(self)
-
+		self.realtime=realtime
 		self.running=True
 		self.INVALDATA= 0x7FFFFFFF
 		self.TOTAL_FLIGHT_SECONDS=TOTAL_FLIGHT_SECONDS
 		self.LAT_LON_SCALE_FACTOR=3600.0
-		self.temperature=5
 		self.airports=airports
-		self.FPA=self.INVALDATA
 		self.prev_altitude = 0.0
-		self.vertical_speed = 0.0
 		self.last_update_time = time.time()
 		self.PHASE_FRACTIONS = {
 			0.0: 1,   # pre flight
@@ -31,19 +28,42 @@ class Simulator(threading.Thread):
 			0.90: 6,   # approach
 			1.00: 7,	#landing
 			1.05: 8    # post flight / taxi
-			}
+		}
+		self.phase_vs_targets = {
+			1: 0,       # Preflight
+			2: 2500,    # Takeoff
+			3: 3000,    # Climb
+			4: 0,       # Cruise
+			5: -2500,   # Descent
+			6: -1000,   # Approach
+			7: -300,    # Landing (Flare)
+			8: 0        # Postflight
+		}
+		
+		self.phase_speed_targets = {
+			1: 0,      # Preflight (Taxi / Stationary)
+			2: 150,    # Takeoff roll / Lift-off
+			3: 280,    # Climb
+			4: 450,    # Cruise
+			5: 320,    # Descent
+			6: 180,    # Approach
+			7: 130,    # Touchdown / Rollout
+			8: 20     # Taxi to gate
+		}
 		self.phase_times = {
 			int(f * self.TOTAL_FLIGHT_SECONDS): phase
 			for f, phase in self.PHASE_FRACTIONS.items()
 		}
 		self.acars_phase_id=1
 		self.miqat_phase=1
-		self.profile_mode=2
+		self.profile_mode=1
 		self.current_phase = 1
 		self.end_of_flight=0
 		self.elapsed = 0
 		self.flightnumber=b'PTA00' 
 		self.flightnumber_len = len(self.flightnumber)
+		self.temperature=self.INVALDATA
+		self.windspeed=self.INVALDATA
 		self.altitude_scaled=self.INVALDATA
 		self.altitude=self.INVALDATA
 		self.ground_speed=self.INVALDATA
@@ -60,7 +80,7 @@ class Simulator(threading.Thread):
 		self.roll=self.INVALDATA
 		self.estimated_arrival_time=self.INVALDATA
 		self.time_enc=self.INVALDATA
-		self.vertical_speed=self.INVALDATA
+		self.vertical_speed=0
 		self.date_enc=self.INVALDATA
 		self.heading=self.INVALDATA
 		self.current_lat=self.INVALDATA
@@ -80,6 +100,12 @@ class Simulator(threading.Thread):
 	def run(self):
 		self.start_time=datetime.now(timezone.utc)
 		self.time_init=time.time()
+		
+		self.total_dist_nm=self.haversine_distance(self.dpt_LAT, self.dpt_LON, self.dst_LAT, self.dst_LON)
+		
+		if(self.realtime==True):
+			self.TOTAL_FLIGHT_SECONDS = max((self.total_dist_nm / 480.0) * 3600.0, 60.0) #the total distance and the average speed of a commercial aircraft
+		
 		self.ciclo()
 	
 	
@@ -107,18 +133,7 @@ class Simulator(threading.Thread):
 			self.altitude = 35000 * math.sin(math.pi * fraction) if fraction < 1.0 else 0
 			self.altitude_scaled = int(self.altitude * 100)
 
-			phase_vs_targets = {
-				1: 0,       # Preflight
-				2: 2500,    # Takeoff
-				3: 3000,    # Climb
-				4: 0,       # Cruise
-				5: -2500,   # Descent
-				6: -1000,   # Approach
-				7: -300,    # Landing (Flare)
-				8: 0        # Postflight
-			}
-
-			target_vs = phase_vs_targets.get(self.current_phase, 0)
+			target_vs = self.phase_vs_targets.get(self.current_phase, 0)
 
 			# --- 2. Calculate Delta Time Safely ---
 			current_time = time.time()
@@ -132,11 +147,11 @@ class Simulator(threading.Thread):
 			# This prevents the needle from snapping instantly to the new target
 				smoothing_factor = 0.05 
 				self.vertical_speed += (target_vs - self.vertical_speed) * smoothing_factor
+				if(self.vertical_speed>6000):
+					self.vertical_speed=6000
     
 				# --- 4. Update Altitude based on VS ---
 				# Formula: VS (ft/min) / 60 = ft/sec. Multiply by delta_time (sec)
-				altitude_change = (self.vertical_speed / 60.0) * delta_time
-				self.altitude += altitude_change
     
 				# Safety: Don't go below ground level
 				if self.altitude < 0:
@@ -149,8 +164,6 @@ class Simulator(threading.Thread):
 
 			self.altitude_scaled = int(self.altitude * 100)
 			self.vertical_speed_scaled = int(self.vertical_speed * 100)
-
-			self.vertical_speed_scaled = int(self.vertical_speed * 100)
 			self.prev_altitude = self.altitude
 			
 			if self.altitude < 36089:
@@ -158,32 +171,42 @@ class Simulator(threading.Thread):
 			else:
 				self.temperature = -56.5 # Tropopause temperature is constant
 				
-    
-			# Calculate True Airspeed (TAS) and Mach (M)
-			self.true_airspeed = 450 * (1 - abs(math.cos(math.pi * fraction)) * 0.2) # TAS varies slightly
-			speed_of_sound = 20.05 * math.sqrt(self.temperature+273.15) * 1.944 # approx ft/s to knots
-			self.mach = int((self.true_airspeed / speed_of_sound) * 1000)
 			# Calculate Distance to Destination
-			self.total_dist_nm = self.haversine_distance(self.dpt_LAT, self.dpt_LON, self.dst_LAT, self.dst_LON)
 			self.dist_traveled = self.total_dist_nm * fraction
 			self.distance_to_destination = int(self.total_dist_nm - self.dist_traveled) # Remaining distance in NM
 
 		# --- Other Data ---
-			self.ground_speed = int(self.true_airspeed * 0.95)
+			target_gs = self.phase_speed_targets.get(self.current_phase, 0)
+
+			# Smoothly transition ground speed (prevents instant jumps)
+			if not hasattr(self, 'current_gs'):
+				self.current_gs = float(target_gs)
+			else:
+				self.current_gs += (target_gs - self.current_gs) * 0.05
+
+			self.ground_speed = int(self.current_gs)
+
+			# Calculate TAS and Tailwind/Headwind effects
 			self.head_wind = 39
 			wind_direction = self.heading + 10
 			wind_angle_diff = self.heading - wind_direction
 			self.tailwind = int(self.head_wind * math.cos(math.radians(wind_angle_diff)))
 			self.time_since_departure= int((self.elapsed)/60)
-			self.FPA = math.degrees(math.atan(self.vertical_speed / (self.ground_speed * 101.27)))
-			
+			self.true_airspeed = self.ground_speed + self.head_wind
+			if self.ground_speed and self.ground_speed > 0:
+				self.windspeed = math.degrees(math.atan(self.vertical_speed / (self.ground_speed * 101.27)))
+			else:
+				self.windspeed = 0
+				
+			# Mach
+			speed_of_sound = 20.05 * math.sqrt(self.temperature+273.15) * 1.944 # approx ft/s to knots
+			self.mach = int((self.true_airspeed / speed_of_sound) * 1000)
     
 		# --- PITCH and ROLL DEPENDENT ON FLIGHT PHASE (DYNAMIC) ---
-			self.pitch = 0
-			self.roll = 0
+			self.roll=0
     
 			if self.current_phase == 2: # Takeoff
-				self.pitch = int(5 + 5 * min(self.elapsed, 30) / 30) # Up to 10 degrees pitch up
+				self.pitch = 10
 			elif self.current_phase == 3: # Climb
 				self.pitch = 5
 			elif self.current_phase == 4: # Cruise
@@ -194,7 +217,9 @@ class Simulator(threading.Thread):
 				self.pitch = 2
 			elif self.current_phase == 7: # Landing
 				self.pitch = 5 # Flare
-				self.roll = 0
+			else:
+				self.pitch = 0
+				
 			
 				
 			now = datetime.now(timezone.utc)
@@ -389,8 +414,8 @@ class Simulator(threading.Thread):
 	def get_HeadingToDestination(self):
 		return int(self.heading) if self.heading != self.INVALDATA else 0
 
-	def get_FPA(self):
-		return int(self.FPA) if self.FPA != self.INVALDATA and self.FPA is not None else 0
+	def get_windspeed(self):
+		return int(self.windspeed) if self.windspeed != self.INVALDATA and self.windspeed is not None else 0
 
 	def get_MiqatPhase(self):
 		return self.miqat_phase
@@ -412,12 +437,12 @@ class Simulator(threading.Thread):
 			int(self.get_LatLon("lat")),                                              # 1. Current Lat
 			int(self.get_LatLon("lon")),                                              # 2. Current Lon
 			int(self.ground_speed), 															# 3. ground speed,
-			int(self.true_airspeed),	 														# 4. true airspeed (formerly Mach field)
-			int(self.FPA),																	# 5. FPA
+			int(self.true_airspeed),	 														# 4. true airspeed
+			int(self.windspeed),																	# 5. windspeed
 			int(self.head_wind), 															# 6. headwind
 			int(self.distance_to_destination),                                                    # 7. Distance to destination
 			int(self.dist_traveled),                                      					# 8. Distance from departure
-			int(self.altitude),                                                            # 9. Altitude (Scaled)
+			int(self.altitude),                                                            # 9. Altitude (raw)
 			int(self.temperature),                                                    		# 10. temperature
 			int(self.remaining_time),                                                        # 11. Remaining time
 			int(self.time_since_departure),                         								# 12 Time since departure
@@ -440,17 +465,17 @@ class Simulator(threading.Thread):
 			int(self.dst_ICAO),                                            # 29. DST ICAO
 			int(self.dst_GEOID),						                                    # 30. DST NAME/CITY ID
 			self.current_phase,                                                                      # 31. Phase
-			self.acars_phase_id,                                                             # 32. Acars Phase ID
-			self.miqat_phase, 																# 33. Miqat phase (1:Disabled 2:Working 3:Countdown 4:Welcome)
+			self.acars_phase_id,                                                             # 32. Acars Phase ID NOT IMPLEMENTED
+			self.miqat_phase, 																# 33. Miqat phase (1:Disabled 2:Working 3:Countdown 4:Welcome) NOT IMPLEMENTED
 			self.flightnumber_len,																#34. flight number length
 			self.flightnumber,  															#35 flight number
 			0,                                                             					  # 36. weird pitch and roll values combined (not using, using 40/41 instead)                                                                 
 			self.end_of_flight,                                                              	# 37. end of flight flag (DONT TOUCH it breaks the program when greater than 0 and causes crash)                                                            
-			self.profile_mode,                                                               # 38. Profile mode
-			int(self.altitude_scaled),                                                            # 39. unscaled altitude
-			int(self.vertical_speed),                                                             # 40. vertical speed (unscaled)
-			int(self.pitch),                                                                   	# 41. pitch (dynamic)
-			int(self.roll),																		# 42. roll (dynamic)													
+			self.profile_mode,                                                               # 38. Profile mode NOT IMPLEMENTED
+			int(self.altitude_scaled),                                                            # 39. scaled altitude
+			int(self.vertical_speed),                                                             # 40. vertical speed (raw)
+			int(self.pitch),                                                                   	# 41. pitch
+			int(self.roll),																		# 42. roll													
 			]
 
 			return packet

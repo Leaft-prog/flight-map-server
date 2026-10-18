@@ -128,16 +128,40 @@ class Airport_Loader:
 			return self.INVALDATA
 		
 	def get_dpt_ICAO(self):
-		if(self.dpt_IATA is not self.INVALDATA):
+		if(self.dpt_ICAO is not self.INVALDATA):
 			return self.encode_airport(self.dpt_ICAO)
 		else:
 			return self.INVALDATA
 		
 	def get_dst_ICAO(self):
-		if(self.dpt_IATA is not self.INVALDATA):
+		if(self.dst_ICAO is not self.INVALDATA):
 			return self.encode_airport(self.dst_ICAO)
 		else:
 			return self.INVALDATA
+			
+	def get_dpt_IATA_str(self):
+		if(self.dpt_IATA is not self.INVALDATA):
+			return self.dpt_IATA
+		else:
+			return "none"
+		
+	def get_dst_IATA_str(self):
+		if(self.dpt_IATA is not self.INVALDATA):
+			return self.dst_IATA
+		else:
+			return "none"
+		
+	def get_dpt_ICAO_str(self):
+		if(self.dpt_IATA is not self.INVALDATA):
+			return self.dpt_ICAO
+		else:
+			return "none"
+		
+	def get_dst_ICAO_str(self):
+		if(self.dpt_IATA is not self.INVALDATA):
+			return self.dst_ICAO
+		else:
+			return "none"
 	
 	def get_dpt_LAT(self):
 		return self.dpt_LAT

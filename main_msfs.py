@@ -58,15 +58,15 @@ try:
 
         # Clear each line to the end as we write to prevent ghost characters
 		lines = [
-            f"\033[KDeparture: IATA {sim.get_dptIATA()}, ICAO {sim.get_dpt_ICAO()}, geoID {sim.get_dpt_GEOID()}, LAT {sim.get_dpt_LAT()}, LON {sim.get_dpt_LON()}",
-            f"\033[KDestination: IATA {sim.get_dstIATA()}, ICAO {sim.get_dst_ICAO()}, geoID {sim.get_dst_GEOID()}, LAT {sim.get_dst_LAT()}, LON {sim.get_dst_LON()}",
+            f"\033[KDeparture: IATA {sim.get_dpt_IATA_str()}, ICAO {sim.get_dpt_ICAO_str()}, geoID {sim.get_dpt_GEOID()}, LAT {sim.get_dpt_LAT()}, LON {sim.get_dpt_LON()}",
+            f"\033[KDestination: IATA {sim.get_dst_IATA_str()}, ICAO {sim.get_dst_ICAO_str()}, geoID {sim.get_dst_GEOID()}, LAT {sim.get_dst_LAT()}, LON {sim.get_dst_LON()}",
             f"\033[KCurrent Latitude: {sim.get_LatLon('lat')}, Current Longitude {sim.get_LatLon('lon')}",
             f"\033[KAltitude: {sim.get_Altitude(False)} ft",
             f"\033[KTrue airspeed: {sim.get_TrueAirspeed()}",
             f"\033[KHeadwind: {sim.get_Headwind()}",
             f"\033[KGround Speed: {sim.get_GroundSpeed()} kt",
             f"\033[KVertical Speed: {sim.get_VerticalSpeed(False)} fpm",
-            f"\033[KFPA: {sim.get_FPA():.2f} deg",
+            f"\033[KWindspeed: {sim.get_windspeed():.2f} deg",
             f"\033[KPITCH: {sim.get_Pitch()} ROLL:{sim.get_Roll()}",
             f"\033[KHeading: {sim.get_Heading()} deg",
             f"\033[KDistance: {sim.get_DistanceToDestination()} NM",

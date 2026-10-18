@@ -24,13 +24,20 @@ else:
 		
 if len(sys.argv)==4:
 	TOTAL_FLIGHT_SECONDS=int(sys.argv[3])
+	realtime=False
 else:
-	print("total flight seconds not provided, using default timing")
-	TOTAL_FLIGHT_SECONDS=600
+	print("total flight seconds not provided, simulating full time")
+	TOTAL_FLIGHT_SECONDS=0
+	realtime=True
 	
 
 
 airports=Airport_Loader(dep, dst, 'iata')
+
+if(TOTAL_FLIGHT_SECONDS!=0 and TOTAL_FLIGHT_SECONDS<600):
+	print("TIME INFERIOR THAN 600 seconds, aborting!")
+	sys.exit(1)
+	
 
 if airports.validity()==False:
 	print("INVALID codes aborting!")
@@ -39,10 +46,11 @@ if airports.validity()==False:
 print("-"*30)
 print("Departure: "+dep)
 print("Destination: "+dst)
-print("Total flight time: "+str(TOTAL_FLIGHT_SECONDS))
+if(TOTAL_FLIGHT_SECONDS!=0):
+	print("Total flight time: "+str(TOTAL_FLIGHT_SECONDS))
 print("-"*30)
 
-sim=Simulator(airports, TOTAL_FLIGHT_SECONDS)
+sim=Simulator(airports, realtime, TOTAL_FLIGHT_SECONDS)
 
 sender=Udp_Sender(sim)
 plat=Platform()
@@ -75,15 +83,15 @@ try:
 
         # Clear each line to the end as we write to prevent ghost characters
 		lines = [
-            f"\033[KDeparture: IATA {sim.get_dptIATA()}, ICAO {sim.get_dpt_ICAO()}, geoID {sim.get_dpt_GEOID()}, LAT {sim.get_dpt_LAT()}, LON {sim.get_dpt_LON()}",
-            f"\033[KDestination: IATA {sim.get_dstIATA()}, ICAO {sim.get_dst_ICAO()}, geoID {sim.get_dst_GEOID()}, LAT {sim.get_dst_LAT()}, LON {sim.get_dst_LON()}",
+            f"\033[KDeparture: IATA {airports.get_dpt_IATA_str()}, ICAO {airports.get_dpt_ICAO_str()}, geoID {sim.get_dpt_GEOID()}, LAT {sim.get_dpt_LAT()}, LON {sim.get_dpt_LON()}",
+            f"\033[KDestination: IATA {airports.get_dst_IATA_str()}, ICAO {airports.get_dst_ICAO_str()}, geoID {sim.get_dst_GEOID()}, LAT {sim.get_dst_LAT()}, LON {sim.get_dst_LON()}",
             f"\033[KCurrent Latitude: {sim.get_LatLon('lat')}, Current Longitude {sim.get_LatLon('lon')}",
             f"\033[KAltitude: {sim.get_Altitude(False)} ft",
             f"\033[KTrue airspeed: {sim.get_TrueAirspeed()}",
             f"\033[KHeadwind: {sim.get_Headwind()}",
             f"\033[KGround Speed: {sim.get_GroundSpeed()} kt",
             f"\033[KVertical Speed: {sim.get_VerticalSpeed(False)} fpm",
-            f"\033[KFPA: {sim.get_FPA():.2f} deg",
+            f"\033[KWindspeed: {sim.get_windspeed():.2f} deg",
             f"\033[KPITCH: {sim.get_Pitch()} ROLL:{sim.get_Roll()}",
             f"\033[KHeading: {sim.get_Heading()} deg",
             f"\033[KDistance: {sim.get_DistanceToDestination()} NM",

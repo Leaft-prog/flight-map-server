@@ -21,7 +21,7 @@ class Connector(threading.Thread):
 		self.altitude_scaled = self.INVALDATA
 		self.altitude = self.INVALDATA
 		self.temperature = 5
-		self.FPA = 30
+		self.windspeed = 30
 		self.prev_altitude = 0.0
 		self.vertical_speed = 0.0
 		self.ground_speed = self.INVALDATA
@@ -44,7 +44,7 @@ class Connector(threading.Thread):
 		self.current_lat = self.INVALDATA
 		self.current_lon = self.INVALDATA
 		self.destination_heading= self.INVALDATA
-		self.flightnumber = b'NULL0'
+		self.flightnumber = b'BLANK'
 		SIM_PROCESSES = ["FlightSimulator.exe", "FlightSimulator2024.exe"]
 		islaunched=False
 		self.flightnumber_len = len(self.flightnumber)
@@ -156,15 +156,27 @@ class Connector(threading.Thread):
 		# Fallback/Static airport variables from loader
 		self.dpt_LAT = self.airports.get_dpt_LAT()
 		self.dpt_LON = self.airports.get_dpt_LON()
-		self.dpt_IATA = self.airports.get_dpt_IATA()
+		if(self.airports.get_dpt_IATA()!=0):
+			self.dpt_IATA = self.airports.get_dpt_IATA()
+		else:
+			self.dpt_IATA = self.INVALDATA
+			self.dpt_ICAO = self.INVALDATA
+			
 		self.dpt_GEOID = self.airports.get_dpt_GEOID()
 		self.dst_LAT = self.airports.get_dst_LAT()
 		self.dst_LON = self.airports.get_dst_LON()
-		self.dst_IATA = self.airports.get_dst_IATA()
+		if(self.airports.get_dst_IATA()!=0):
+			self.dst_IATA = self.airports.get_dst_IATA()
+		else:
+			self.dst_IATA = self.INVALDATA
+			self.dst_ICAO = self.INVALDATA
 		self.dst_GEOID = self.airports.get_dst_GEOID()
 		self.destination_heading= self.compute_heading(self.current_lat, self.current_lon, self.dst_LAT, self.dst_LON)
+		
+			
 
-
+		self.dpt_IATA_str=self.airports.get_dpt_IATA_str()
+		self.dst_IATA_str=self.airports.get_dst_IATA_str()
 
 		# State variables initialized
 		self.current_phase = 1
@@ -198,6 +210,7 @@ class Connector(threading.Thread):
 			self.ground_speed = int(self.aq.get("GROUND_VELOCITY") or 0.0) # Knots
 			self.true_airspeed = self.aq.get("AIRSPEED_TRUE") or 0.0
 			self.mach = int((self.aq.get("AIRSPEED_MACH") or 0.0) * 1000)
+			self.windspeed=int(self.aq.get("AMBIENT_WIND_VELOCITY") or 0.0)
 
 			
 			heading_val = self.aq.get("PLANE_HEADING_DEGREES_TRUE")
@@ -315,14 +328,24 @@ class Connector(threading.Thread):
 		return int(self.ground_speed) if self.ground_speed != self.INVALDATA else 0
 	
 	def get_dptIATA(self):
-		return int(self.dpt_IATA) if isinstance(self.dpt_IATA, (int, float)) and self.dpt_IATA != self.INVALDATA else 0
+		return self.dpt_IATA
 	def get_dstIATA(self):
-		return int(self.dst_IATA) if isinstance(self.dst_IATA, (int, float)) and self.dst_IATA != self.INVALDATA else 0
+		return self.dst_IATA
+		
+	def get_dpt_IATA_str(self):
+		return self.dpt_IATA_str
+	def get_dst_IATA_str(self):
+		return self.dst_IATA_str
 		
 	def get_dpt_ICAO(self):
 		return self.dpt_ICAO
 	def get_dst_ICAO(self):
 		return self.dst_ICAO
+		
+	def get_dpt_ICAO_str(self):
+		return self.dpt_ICAO_str
+	def get_dst_ICAO_str(self):
+		return self.dst_ICAO_str
 	
 	def get_dpt_LAT(self):
 		return self.dpt_LAT
@@ -431,8 +454,8 @@ class Connector(threading.Thread):
 	def get_HeadingToDestination(self):
 		return int(self.destination_heading) if self.heading != self.INVALDATA else 0
 
-	def get_FPA(self):
-		return int(self.FPA) if self.FPA != self.INVALDATA and self.FPA is not None else 0
+	def get_windspeed(self):
+		return int(self.windspeed) if self.windspeed != self.INVALDATA and self.windspeed is not None else 0
 
 	def get_MiqatPhase(self):
 		return self.miqat_phase
@@ -462,7 +485,7 @@ class Connector(threading.Thread):
 			safe_int(self.get_LatLon("lon")),
 			safe_int(self.ground_speed),
 			safe_int(self.true_airspeed),
-			safe_int(self.FPA),
+			safe_int(self.windspeed),
 			safe_int(self.head_wind),
 			safe_int(self.distance_to_destination),
 			safe_int(self.dist_traveled),
@@ -478,13 +501,13 @@ class Connector(threading.Thread):
 			safe_int(self.dist_traveled * 100 if self.dist_traveled != self.INVALDATA else 0),
 			safe_int(self.time_enc),
 			safe_int(self.date_enc),
-			safe_int(self.dpt_LAT * self.LAT_LON_SCALE_FACTOR if self.dpt_LAT != self.INVALDATA and self.dpt_LAT is not None else 0),
-			safe_int(self.dpt_LON * self.LAT_LON_SCALE_FACTOR if self.dpt_LON != self.INVALDATA and self.dpt_LON is not None else 0),
+			safe_int(self.dpt_LAT * self.LAT_LON_SCALE_FACTOR if self.dpt_LAT != self.INVALDATA and self.dpt_LAT is not None else self.INVALDATA),
+			safe_int(self.dpt_LON * self.LAT_LON_SCALE_FACTOR if self.dpt_LON != self.INVALDATA and self.dpt_LON is not None else self.INVALDATA),
 			safe_int(self.dpt_IATA),
 			safe_int(self.dpt_ICAO),
 			safe_int(self.dpt_GEOID),
-			safe_int(self.dst_LAT * self.LAT_LON_SCALE_FACTOR if self.dst_LAT != self.INVALDATA and self.dst_LAT is not None else 0),
-			safe_int(self.dst_LON * self.LAT_LON_SCALE_FACTOR if self.dst_LON != self.INVALDATA and self.dst_LON is not None else 0),
+			safe_int(self.dst_LAT * self.LAT_LON_SCALE_FACTOR if self.dst_LAT != self.INVALDATA and self.dst_LAT is not None else self.INVALDATA),
+			safe_int(self.dst_LON * self.LAT_LON_SCALE_FACTOR if self.dst_LON != self.INVALDATA and self.dst_LON is not None else self.INVALDATA),
 			safe_int(self.dst_IATA),
 			safe_int(self.dst_ICAO),
 			safe_int(self.dst_GEOID),
