@@ -1,10 +1,18 @@
-This program simulates flight data compatible with ASXi mobile.
-It simulates a flight with the desired destinations.
+This program simulates flight data compatible with ASXi mobile. Now it also supports MSFS telemetry. It simulates a flight with the desired destinations.
+
+
+ADMIN permissions are necessary to open port 80 for local file server (required for pushing config.zip and ticker ads, the program works anyway without admin permissions
+but config server will not work).
 
 how to use:
 
-python3 main.py [departure iata code]
-[destination iata code] [simulation seconds)
+[Linux & MacOS] run_simulator.sh [departure iata code] [destination iata code] [simulation seconds]
+
+[WINDOWS] Simulator: run_simulator.bat [departure iata code] [destination iata code] [simulation seconds] MSFS: run_msfs.bat
+
+For MSFS SimConnect module is required
+
+NOTE: Now simulated flight calculates the full time at the destination if flight seconds arent specified instead of simulating a short 10 minutes flight
 
 Some code was made by ai (most of these parts are just formulas and calculations as I don't have any knowledge in aviation lmao and some weird logic).
 
