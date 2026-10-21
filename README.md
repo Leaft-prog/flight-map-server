@@ -14,6 +14,20 @@ For MSFS SimConnect module is required
 
 NOTE: Now simulated flight calculates the full time at the destination if flight seconds arent specified instead of simulating a short 10 minutes flight
 
+ASXI clients:
+Airshow Mobile 2 (recomended version, removed from playstore and appstore)
+https://apkpure.net/airshow-mobile-2/com.rockwellcollins.airshowgen2
+Falcon Map (if you have iOS or want to download from playstore)
+https://play.google.com/store/apps/details?id=com.dassault.falconmap
+https://apps.apple.com/in/app/falconmap-by-collins/id1473265374
+Airshow Mobile 3
+https://play.google.com/store/apps/details?id=com.rockwellcollins.airshow3&hl=en-US
+https://apps.apple.com/us/app/airshow-mobile-3/id1525957526
+Airshow Mobile HD (not recomended)
+https://play.google.com/store/apps/details?id=com.rockwellcollins.unifiedentertainment&hl=en-US
+https://apps.apple.com/au/app/airshow-hd/id6451424595
+Airshow Mobile (legacy) (not compatible with modern android, unstable)
+https://apkpure.net/airshow-mobile/com.rockwellcollins.tustin.airshow
 Some code was made by ai (most of these parts are just formulas and calculations as I don't have any knowledge in aviation lmao and some weird logic).
 
 Legal Notice
