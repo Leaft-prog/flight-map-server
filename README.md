@@ -14,6 +14,9 @@ For MSFS SimConnect module is required
 
 NOTE: Now simulated flight calculates the full time at the destination if flight seconds arent specified instead of simulating a short 10 minutes flight
 
+NOTE for Windows hosts: if asxi displays flight data not available, check this guide to change network adapter priority 
+https://www.mividi.com/en-US/blog/BlogContent.aspx?id=41
+
 ASXI clients:
 Airshow Mobile 2 (recomended version, removed from playstore and appstore)
 https://apkpure.net/airshow-mobile-2/com.rockwellcollins.airshowgen2
@@ -31,6 +34,11 @@ https://apkpure.net/airshow-mobile/com.rockwellcollins.tustin.airshow
 
 NOTE for IOS: ticker ads and logo arent supported on falconmap,
 only on airshow mobile 3 and higher support logo on iOS 
+
+NOTE for Xiaomi devices: Due to Miui/HyperOS aggressive process handling and battery saving failing to listen more than one multicast address, ASXI often fails to connect 
+to platform service or it is very slow at loading the map
+
+NOTE for some rockchip devices: on somr devices platform discovery fails to connect due to network card stack not being able to handle multiple multicast addresses
 
 NOTE for FalconMap: Notifications about cabin wifi or cabin system not being connected are often shown repeatedly
 , these can be ignored as those are Dassault Falcon CMS related stuff, if you find these annoying consider using airshow mobile 2 or 3
