@@ -28,6 +28,19 @@ https://play.google.com/store/apps/details?id=com.rockwellcollins.unifiedenterta
 https://apps.apple.com/au/app/airshow-hd/id6451424595
 Airshow Mobile (legacy) (not compatible with modern android, unstable)
 https://apkpure.net/airshow-mobile/com.rockwellcollins.tustin.airshow
+
+NOTE for IOS: ticker ads and logo arent supported on falconmap,
+only on airshow mobile 3 and higher support logo on iOS 
+
+NOTE for FalconMap: Notifications about cabin wifi or cabin system not being connected are often shown repeatedly
+, these can be ignored as those are Dassault Falcon CMS related stuff, if you find these annoying consider using airshow mobile 2 or 3
+
+Note for Falcon Map and Airshow Mobile 3 and HD: A warning about map terrain data not being found is shown upon opening
+
+Note for Airshow Mobile Legacy: This version is really unstable and isnt compatible on modern android versions causing crash upon opening,
+also downloaded config doesnt work for some configurations and screen elements arent shown correctly especially on 1920x1080 resolution
+
+
 Some code was made by ai (most of these parts are just formulas and calculations as I don't have any knowledge in aviation lmao and some weird logic).
 
 Legal Notice
